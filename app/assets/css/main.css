@@ -1,0 +1,133 @@
+/* ---------- Design tokens ---------- */
+:root {
+  --ink: #2c2c2c;
+  --ink-deep: #161616;
+  --coral: #ff6f6f;
+  --paper: #eceae6;
+  --mute: #9a9a97;
+  --line: rgba(236, 234, 230, 0.13);
+
+  --display: 'Archivo', 'Arial Narrow', Helvetica, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+
+  --grid: 88px;
+  --ease-out: cubic-bezier(0.16, 0.84, 0.26, 1);
+
+  color-scheme: dark;
+}
+
+@media (max-width: 860px) {
+  :root { --grid: 62px; }
+}
+
+/* ---------- Base ---------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  overflow-x: clip;
+  scroll-behavior: smooth;
+}
+
+[id] { scroll-margin-top: 26px; }
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--mono);
+  overflow-x: clip;
+}
+
+h1, h2, h3, p, figure { margin: 0; }
+
+img { max-width: 100%; display: block; }
+
+a {
+  color: var(--coral);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 111, 111, 0.4);
+}
+
+a:focus-visible {
+  outline: 2px solid var(--coral);
+  outline-offset: 3px;
+}
+
+/* ---------- Shared utilities ---------- */
+.wrap {
+  max-width: 1600px;
+  margin-inline: auto;
+  padding-inline: max(28px, env(safe-area-inset-left, 0px));
+}
+
+/* Display type: condensed, heavy, tight. */
+.disp {
+  font-family: var(--display);
+  font-variation-settings: 'wdth' 74, 'wght' 900;
+  letter-spacing: -0.02em;
+  line-height: 0.84;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+/* Small mono labels. */
+.tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.tag.co { color: var(--coral); }
+
+.body {
+  font-size: clamp(14px, 1.08vw, 17px);
+  line-height: 1.68;
+  color: #d6d4d0;
+  max-width: 46ch;
+  font-weight: 300;
+}
+
+.rule {
+  height: 1px;
+  background: var(--line);
+  margin-block: clamp(30px, 5vw, 64px);
+}
+
+/* Shared 12-column grid used by plates and the footer. */
+.plate-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: clamp(16px, 2.4vw, 34px);
+  align-items: start;
+  position: relative;
+  z-index: 2;
+}
+
+/* Children opt into a column span through --col; everything stacks on small screens. */
+.plate-grid > .col {
+  grid-column: var(--col, 1 / -1);
+  grid-row: 1;
+}
+
+@media (max-width: 860px) {
+  .plate-grid > .col {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
