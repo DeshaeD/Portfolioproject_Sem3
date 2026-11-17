@@ -5,28 +5,31 @@ import type { Plate } from '~/data/site'
  * The database only stores content. Layout comes from these presets, cycled by position,
  * so project 4 gets preset 1 again, project 5 preset 2, and so on: any number of projects
  * keeps the page's left/right rhythm without anyone choosing grid columns by hand.
+ *
+ * Everything is in grid cells: the ratio's width matches the media's column span, so the
+ * image is exactly that many cells wide and the ratio's height many cells tall.
  */
 const layouts = [
   {
     numeralSide: 'right',
-    cross: { left: '36%', bottom: '14%' },
+    cross: { x: 5, y: 1 },
     columns: { media: '1 / span 4', text: '6 / span 6' },
-    textOffset: 'clamp(16px, 5vw, 70px)',
-    ratio: 'photo',
+    ratio: '4 / 5',
+    textOffset: 1,
   },
   {
     numeralSide: 'left',
-    cross: { right: '14%', top: '8%' },
+    cross: { x: 5, y: 1 },
     columns: { media: '7 / span 6', text: '1 / span 5' },
-    textOffset: 'clamp(20px, 6vw, 96px)',
-    ratio: 'wide',
+    ratio: '6 / 4',
+    textOffset: 2,
   },
   {
     numeralSide: 'right',
-    cross: { left: '44%', top: '5%' },
+    cross: { x: 6, y: 1 },
     columns: { media: '1 / span 5', text: '7 / span 5' },
-    textOffset: 'clamp(16px, 5vw, 74px)',
-    ratio: 'photo',
+    ratio: '5 / 4',
+    textOffset: 1,
   },
 ] as const
 
@@ -37,7 +40,7 @@ export function projectToPlate(row: ProjectRow, index: number): Plate {
   return {
     numeral,
     numeralSide: layout.numeralSide,
-    cross: { label: `${numeral} / ${row.title_top}`, position: { ...layout.cross } },
+    cross: { label: `${numeral} / ${row.title_top}`, ...layout.cross },
     kicker: row.kicker ? `Project ${numeral} — ${row.kicker}` : `Project ${numeral}`,
     title: [
       { text: row.title_top, style: row.title_top_style },
@@ -47,7 +50,8 @@ export function projectToPlate(row: ProjectRow, index: number): Plate {
     chips: row.tools.map(label => ({ label })),
     media: row.image_url
       ? { kind: 'image', src: row.image_url, alt: row.image_alt ?? '' }
-      : { kind: 'placeholder', ratio: layout.ratio },
+      : { kind: 'placeholder' },
+    ratio: layout.ratio,
     caption: `Fig. ${numeral} — ${row.caption ?? row.title_top}`,
     columns: { ...layout.columns },
     textOffset: layout.textOffset,

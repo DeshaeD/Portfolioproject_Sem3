@@ -2,7 +2,8 @@
   <div>
     <TopBar />
     <HeroSection />
-    <MarqueeStrip :words="strips.roles" variant="coral" />
+    <!-- 3 cells tall: the hero title hangs into the top of this band. -->
+    <MarqueeStrip :words="strips.roles" variant="coral" :rows="3" />
 
     <ProjectPlate :plate="about" />
 
@@ -11,9 +12,8 @@
 
       <template v-for="(plate, i) in plates" :key="plate.numeral">
         <ProjectPlate :plate="plate" />
-        <!-- One motto strip after the first project; plain rules between the rest. -->
+        <!-- One motto strip after the first project; whitespace separates the rest. -->
         <MarqueeStrip v-if="i === 0" :words="strips.motto" variant="dark" separator="dash" :repeat="6" />
-        <div v-else-if="i < plates.length - 1" class="rule wrap" />
       </template>
     </div>
 
@@ -33,5 +33,5 @@ const plates = computed(() => projects.value.map(projectToPlate))
 </script>
 
 <style scoped>
-.status { padding-block: 40px; }
+.status { padding-block: var(--grid); }
 </style>

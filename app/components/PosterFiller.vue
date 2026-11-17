@@ -15,9 +15,7 @@
 .poster {
   position: relative;
   height: 100%;
-  min-height: 280px;
   background: var(--paper);
-  border: 1px solid var(--paper);
   overflow: hidden;
   isolation: isolate; /* keeps the blend mode below from mixing with the page behind the poster */
 }
@@ -34,11 +32,15 @@
   mask-image: linear-gradient(135deg, transparent 20%, #000 90%);
 }
 
-/* Oversized coral disc cropped by the top-right edge. multiply lets the dots print through it. */
+/*
+ * The poster is a wide banner, so the shapes are sized from its height (with width
+ * following through aspect-ratio) to keep them round at any width.
+ * Oversized coral disc cropped by the top-right edge. multiply lets the dots print through it.
+ */
 .sun {
-  top: -14%;
-  right: -22%;
-  width: 82%;
+  top: -45%;
+  right: -8%;
+  height: 160%;
   aspect-ratio: 1;
   border-radius: 50%;
   background: var(--coral);
@@ -49,7 +51,7 @@
 .quarter {
   left: 0;
   bottom: 0;
-  width: 56%;
+  height: 100%;
   aspect-ratio: 1;
   background: var(--ink-deep);
   border-top-right-radius: 100%;

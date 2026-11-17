@@ -1,5 +1,5 @@
 <template>
-  <div class="stripwrap" aria-hidden="true">
+  <div class="stripwrap" :style="{ '--rows': rows }" aria-hidden="true">
     <div class="strip" :class="variant">
       <div class="rail">
         <template v-for="(word, i) in rail" :key="i">
@@ -22,10 +22,13 @@ const props = withDefaults(defineProps<{
   separator?: 'star' | 'dash'
   /** How many times the word list repeats per half of the rail. */
   repeat?: number
+  /** Height of the band the strip is centred in, in grid cells. */
+  rows?: number
 }>(), {
   variant: 'coral',
   separator: 'star',
   repeat: 3,
+  rows: 2,
 })
 
 // The rail holds the content twice; sliding it by -50% then lands on an identical frame, so the loop is seamless.
@@ -37,13 +40,17 @@ const rail = computed(() => {
 
 <style scoped>
 /*
+ * A band of whole grid cells with the strip centred in it, so the content after it
+ * still starts on a line.
  * Clip sideways only. `overflow: hidden` also clipped vertically, which cut off
  * the top and bottom corners of the tilted strip.
  */
 .stripwrap {
+  height: calc(var(--grid) * var(--rows));
+  display: grid;
+  align-content: center;
   overflow-x: clip;
   overflow-y: visible;
-  margin-block: clamp(56px, 9vw, 130px);
   position: relative;
   z-index: 2;
 }

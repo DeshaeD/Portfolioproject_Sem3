@@ -1,15 +1,8 @@
 <template>
   <section class="hero">
-    <!--
-      The name is SVG text with textLength, so it always spans the column's full height
-      regardless of screen size or which font has loaded.
-    -->
-    <div class="vname" aria-hidden="true">
-      <svg viewBox="0 0 120 1000" preserveAspectRatio="xMidYMid meet">
-        <text x="-1000" y="117" transform="rotate(-90)" textLength="1000" lengthAdjust="spacingAndGlyphs">
-          Deshae Dekker
-        </text>
-      </svg>
+    <!-- Stretched so the letters run from the hero's top line to its bottom line, and edge to edge across the column. -->
+    <div class="vname">
+      <FitText text="Deshae Dekker" stretch="extra-condensed" vertical />
     </div>
 
     <div class="photo">
@@ -28,36 +21,41 @@
 </template>
 
 <style scoped>
-/* Name column + photo. The hero is at least 80% of the viewport tall. */
+/*
+ * Name column + photo. The hero is at least 80% of the viewport tall, rounded down to
+ * whole grid cells so the page below it starts on a line.
+ *
+ * mod(margin, grid) is the distance from the page edge to the first grid line. The name
+ * starts on that line and the column ends on the first line past the name's natural width
+ * (about 0.115x its height), so both of the name's sides are grid lines.
+ */
 .hero {
+  --hero-h: round(down, max(80svh, 88svh - 40px, 420px), var(--grid));
+  --name-w: calc(var(--hero-h) * 0.115);
+  --first-line: mod(var(--margin), var(--grid));
   position: relative;
   z-index: 3;
   display: grid;
-  grid-template-columns: auto 1fr;
-  height: max(80svh, 88svh - 40px, 420px);
-  border-bottom: 1px solid var(--line);
+  grid-template-columns: calc(var(--first-line) + round(up, var(--name-w), var(--grid))) 1fr;
+  /*
+   * Lock the row to the hero's height. Without this the row is sized from its content:
+   * the SVG would take the column's width and grow tall from its aspect ratio.
+   */
+  grid-template-rows: minmax(0, 1fr);
+  height: var(--hero-h);
 }
 
-/* Solid fill hides the grid, so the name column reads as its own panel beside the photo. */
+/* Solid page colour hides the grid behind the name. */
 .vname {
-  height: 100%;
-  background: var(--ink-deep);
-  padding: clamp(8px, 1.2vw, 16px) clamp(4px, 0.8vw, 10px);
+  min-height: 0;
+  padding-left: var(--first-line);
+  background: var(--ink);
+  color: var(--coral);
 }
 
-.vname svg {
-  display: block;
+.vname .fit-text {
+  width: 100%;
   height: 100%;
-  width: auto;
-  aspect-ratio: 120 / 1000;
-}
-
-.vname text {
-  fill: var(--coral);
-  font-family: var(--display);
-  font-variation-settings: 'wdth' 62, 'wght' 900;
-  font-size: 160px;
-  text-transform: uppercase;
 }
 
 .photo {
@@ -82,8 +80,8 @@
 
 .hero-meta {
   position: absolute;
-  right: max(22px, env(safe-area-inset-right, 0px));
-  top: 18px;
+  right: var(--margin);
+  top: calc(var(--grid) / 4);
   z-index: 1;
   color: var(--paper);
   mix-blend-mode: difference;
@@ -92,7 +90,7 @@
 /* Hangs off the bottom edge so the title bleeds into the next section. */
 .hero-title {
   position: absolute;
-  right: max(20px, env(safe-area-inset-right, 0px));
+  right: var(--margin);
   bottom: 0;
   transform: translateY(52%);
   text-align: right;

@@ -10,44 +10,49 @@ export interface TitleLine {
 
 export type PlateMedia =
   | { kind: 'image'; src: string; alt: string }
-  | { kind: 'placeholder'; ratio: 'square' | 'wide' | 'photo' }
+  | { kind: 'placeholder' }
 
 export interface Plate {
   id?: string
   numeral: string
   numeralSide: 'left' | 'right'
-  /** Small blueprint annotation; position is any CSS left/right/top/bottom combo. */
-  cross: { label: string; position: Record<string, string> }
+  /** Small blueprint annotation. x/y are grid cells from the plate's top-left corner. */
+  cross: { label: string; x: number; y: number }
   kicker?: string
-  title: [TitleLine, TitleLine]
+  /** One grid cell tall per line. */
+  title: TitleLine[]
   body: string
   chips: { label: string; highlight?: boolean }[]
   media: PlateMedia
+  /** Media width / height in grid cells, e.g. '4 / 3' for a 4-column image 3 cells tall. */
+  ratio: string
   caption: string
   /** Grid column spans for the media and text blocks on desktop. */
   columns: { media: string; text: string }
-  /** Push the text block down so it overlaps the image area unevenly. */
-  textOffset: string
+  /** Push the text block down by this many grid cells. */
+  textOffset: number
 }
 
 export const about: Plate = {
   id: 'about',
   numeral: '00',
   numeralSide: 'left',
-  cross: { label: 'X 480 / Y 092', position: { left: '53%', top: '7%' } },
+  cross: { label: 'X 07 / Y 01', x: 7, y: 1 },
   title: [
     { text: 'Who', style: 'outline' },
-    { text: 'Builds this', style: 'solid' },
+    { text: 'Builds', style: 'solid' },
+    { text: 'This', style: 'solid' },
   ],
   body: 'I build interfaces that behave the way people expect them to and look like nothing else on the page. ICT student at Fontys, working mostly in React and React Native, usually somewhere between the design file and the build.',
   chips: [
     { label: 'Available for internship', highlight: true },
     { label: 'Eindhoven, NL' },
   ],
-  media: { kind: 'placeholder', ratio: 'square' },
+  media: { kind: 'placeholder' },
+  ratio: '6 / 5',
   caption: 'Fig. 00 — Workspace',
   columns: { media: '1 / span 6', text: '8 / span 5' },
-  textOffset: 'clamp(20px, 6vw, 90px)',
+  textOffset: 1,
 }
 
 export const strips = {
