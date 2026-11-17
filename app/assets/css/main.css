@@ -10,14 +10,44 @@
   --display: 'Archivo', 'Arial Narrow', Helvetica, sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
 
-  --grid: 88px;
   --ease-out: cubic-bezier(0.16, 0.84, 0.26, 1);
 
   color-scheme: dark;
 }
 
+/* ---------- Page grid ---------- */
+/*
+ * One grid drives both the background lattice and the layout. The content frame is a
+ * whole number of cells wide, so every column edge lands on a background line.
+ *
+ * @property registers --grid as a real length: the browser computes it to px once,
+ * children inherit that px value, and JS can read it with getComputedStyle.
+ */
+@property --grid {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 88px;
+}
+
+/* Makes cqw mean "body width" (scrollbar excluded), unlike vw. */
+body { container-type: inline-size; }
+
+.page {
+  --cols: 12;
+  --gutter: 28px;
+  --topbar: 44px;
+  /* Whole pixels: fractional tiles can drift away from the content over a long page. */
+  --grid: round(down, min(100cqw - 2 * var(--gutter), 1440px) / var(--cols), 1px);
+  --frame: calc(var(--grid) * var(--cols));
+  /* Space between the page edge and the frame, on either side. */
+  --margin: calc((100cqw - var(--frame)) / 2);
+}
+
 @media (max-width: 860px) {
-  :root { --grid: 62px; }
+  .page {
+    --cols: 6;
+    --gutter: 20px;
+  }
 }
 
 /* ---------- Base ---------- */
@@ -57,9 +87,8 @@ a:focus-visible {
 
 /* ---------- Shared utilities ---------- */
 .wrap {
-  max-width: 1600px;
+  width: var(--frame);
   margin-inline: auto;
-  padding-inline: max(28px, env(safe-area-inset-left, 0px));
 }
 
 /* Display type: condensed, heavy, tight. */
@@ -90,17 +119,14 @@ a:focus-visible {
   font-weight: 300;
 }
 
-.rule {
-  height: 1px;
-  background: var(--line);
-  margin-block: clamp(30px, 5vw, 64px);
-}
-
-/* Shared 12-column grid used by plates and the footer. */
+/*
+ * Shared 12-column grid used by plates and the footer. No gap: on desktop each column is
+ * exactly one background cell, and the empty columns between blocks act as the gutter.
+ */
 .plate-grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  gap: clamp(16px, 2.4vw, 34px);
+  gap: 0;
   align-items: start;
   position: relative;
   z-index: 2;
