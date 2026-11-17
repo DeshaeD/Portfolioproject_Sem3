@@ -100,11 +100,7 @@ figcaption { margin-top: 10px; }
   width: 100%;
   background: #d7d5d1;
   border: 1px solid rgb(0 0 0 / 0.25);
-  transition: filter 0.3s linear;
 }
-
-/* Hover: images flip to inverted, matching the jump-nav preview. */
-figure:hover img.shot { filter: invert(1); }
 
 .placeholder { position: relative; }
 .placeholder.square { aspect-ratio: 1 / 1; }

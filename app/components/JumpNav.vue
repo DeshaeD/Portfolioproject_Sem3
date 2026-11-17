@@ -5,14 +5,10 @@
       <nav class="nav" aria-label="Section shortcuts">
         <!-- Plain <a>, not <NuxtLink>: these are in-page hash jumps, not route changes. -->
         <a
-          v-for="(link, i) in links"
+          v-for="link in links"
           :key="link.href"
           :href="link.href"
           :style="{ '--item-bg': link.bg, '--item-fg': link.fg }"
-          @mouseenter="active = i"
-          @mouseleave="active = null"
-          @focus="active = i"
-          @blur="active = null"
         >
           <span class="cell">
             <span class="word">{{ link.word }}</span>
@@ -27,18 +23,8 @@
       </nav>
     </div>
 
-    <div class="col preview" style="--col: 8 / span 5" aria-hidden="true">
-      <div class="viewer">
-        <span class="empty" :class="{ hidden: active !== null }">[ no section selected ]</span>
-        <div
-          v-for="(link, i) in links"
-          :key="link.href"
-          class="vshot"
-          :class="{ visible: active === i }"
-          :style="link.preview ? { backgroundImage: `url(${link.preview})` } : { background: '#d9d7d3' }"
-        />
-      </div>
-      <p class="tag caption">Preview — colours inverted</p>
+    <div class="col filler" style="--col: 8 / span 5">
+      <PosterFiller />
     </div>
   </div>
 </template>
@@ -47,13 +33,14 @@
 import type { JumpLink } from '~/data/site'
 
 defineProps<{ links: JumpLink[] }>()
-
-// Index of the row being hovered or focused; null shows the empty state.
-const active = ref<number | null>(null)
 </script>
 
 <style scoped>
 .label { margin-bottom: 14px; }
+
+/* Stretch the filler column to the same height as the nav column. */
+.navwrap { align-items: stretch; }
+.filler { padding-top: 29px; }
 
 .nav {
   display: flex;
@@ -140,48 +127,11 @@ const active = ref<number | null>(null)
   flex: none;
 }
 
-.preview { padding-top: clamp(18px, 3vw, 42px); }
-
-.viewer {
-  position: relative;
-  aspect-ratio: 4 / 3;
-  border: 1px solid var(--line);
-  background: var(--ink-deep);
-  overflow: hidden;
-  display: grid;
-  place-items: center;
-}
-
-.empty {
-  z-index: 1;
-  font-size: 11px;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--mute);
-  transition: opacity 0.26s linear;
-}
-.empty.hidden { opacity: 0; }
-
-.vshot {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  background-size: cover;
-  background-position: 50% 30%;
-  filter: invert(1);
-  transition: opacity 0.34s linear;
-}
-.vshot.visible { opacity: 1; }
-
-.caption { margin-top: 10px; }
-
 @media (max-width: 860px) {
-  .preview { display: none; }
+  .filler { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nav a,
-  .vshot,
-  .empty { transition-duration: 0.01ms; }
+  .nav a { transition-duration: 0.01ms; }
 }
 </style>
