@@ -23,7 +23,6 @@
 
     <div class="footbar">
       <span class="tag">© {{ year }} Deshae Dekker</span>
-      <span class="tag">Built by hand</span>
       <span class="tag co">End of document</span>
     </div>
   </footer>

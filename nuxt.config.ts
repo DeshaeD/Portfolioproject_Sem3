@@ -3,6 +3,12 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
+  // Server-only by default. Filled from NUXT_SUPABASE_URL / NUXT_SUPABASE_KEY in .env.
+  runtimeConfig: {
+    supabaseUrl: '',
+    supabaseKey: '',
+  },
+
   // Global stylesheet: design tokens, reset and shared utility classes.
   css: ['~/assets/css/main.css'],
 
